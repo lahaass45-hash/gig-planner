@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f5f7">
+  <meta name="description" content="Dein persönlicher DJ Gig Planner für Kalender, Bookings und Gagen.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <title>Gig Planner</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">DEIN DJ-ASSISTENT</p>
+        <h1>Gig Planner</h1>
+      </div>
+      <button class="icon-button" id="addTop" aria-label="Neuen Gig hinzufügen">＋</button>
+    </header>
+
+    <section class="summary-grid" aria-label="Übersicht">
+      <article class="summary-card"><span>Bookings</span><strong id="bookingCount">0</strong><small>gesamt</small></article>
+      <article class="summary-card"><span>Bestätigte Gagen</span><strong id="confirmedTotal">0 €</strong><small>gebucht</small></article>
+    </section>
+
+    <nav class="tabs" aria-label="Hauptnavigation">
+      <button class="tab active" data-tab="calendar">Kalender</button>
+      <button class="tab" data-tab="bookings">Bookings</button>
+      <button class="tab" data-tab="finance">Finanzen</button>
+    </nav>
+
+    <main>
+      <section class="view active" id="calendarView">
+        <div class="section-heading">
+          <div><h2 id="monthTitle">Kalender</h2><p>Deine nächsten Auftritte</p></div>
+          <div class="month-controls"><button id="prevMonth" aria-label="Vorheriger Monat">‹</button><button id="nextMonth" aria-label="Nächster Monat">›</button></div>
+        </div>
+        <div class="calendar card">
+          <div class="weekdays"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div>
+          <div class="days" id="calendarDays"></div>
+        </div>
+        <div class="section-heading upcoming-heading"><div><h2>Nächste Gigs</h2><p>Tippe auf einen Gig für Details</p></div><button class="primary small" id="addCalendar">＋ Neu</button></div>
+        <div id="upcomingList" class="gig-list"></div>
+      </section>
+
+      <section class="view" id="bookingsView">
+        <div class="section-heading"><div><h2>Meine Bookings</h2><p>Alle Anfragen und Auftritte</p></div><button class="primary small" id="addBookings">＋ Neu</button></div>
+        <div class="filters" id="filters">
+          <button class="filter active" data-filter="Alle">Alle</button><button class="filter" data-filter="Angefragt">Angefragt</button><button class="filter" data-filter="Bestätigt">Bestätigt</button><button class="filter" data-filter="Abgeschlossen">Abgeschlossen</button>
+        </div>
+        <div id="bookingList" class="gig-list"></div>
+      </section>
+
+      <section class="view" id="financeView">
+        <div class="section-heading"><div><h2>Finanzen</h2><p>Deine Gagen im Überblick</p></div></div>
+        <div class="finance-cards">
+          <article class="finance-card"><span>Bestätigte Gagen</span><strong id="financeConfirmed">0 €</strong><small id="confirmedCount">0 bestätigte Bookings</small></article>
+          <article class="finance-card"><span>Bezahlt</span><strong id="financePaid">0 €</strong><small>Als bezahlt markiert</small></article>
+          <article class="finance-card"><span>Offen</span><strong id="financeOpen">0 €</strong><small>Noch nicht als bezahlt markiert</small></article>
+        </div>
+        <h3 class="subheading">Zahlungsübersicht</h3>
+        <div id="financeList" class="gig-list"></div>
+        <div class="data-actions card">
+          <h3>Deine Daten</h3><p>Exportiere eine Sicherung oder importiere eine frühere Sicherung auf diesem Gerät.</p>
+          <div class="action-row"><button class="secondary" id="exportData">Daten exportieren</button><label class="secondary file-label">Importieren<input type="file" id="importData" accept="application/json"></label></div>
+          <p class="fine-print">Die Daten bleiben in diesem Browser auf diesem Gerät. Exportiere regelmäßig eine Sicherung.</p>
+        </div>
+      </section>
+    </main>
+    <footer>GIG PLANNER <span>·</span> DEINE BOOKINGS. DEIN ÜBERBLICK.</footer>
+  </div>
+
+  <dialog id="gigDialog">
+    <form id="gigForm" method="dialog">
+      <div class="dialog-header"><div><p class="eyebrow">BOOKING DETAILS</p><h2 id="formTitle">Neuen Gig anlegen</h2></div><button type="button" class="icon-button close" id="closeDialog" aria-label="Schließen">×</button></div>
+      <input type="hidden" id="gigId">
+      <label>Club / Eventname *<input id="gigName" required maxlength="100" placeholder="z. B. Club Nova"></label>
+      <label>Stadt / Location *<input id="gigCity" required maxlength="100" placeholder="z. B. München"></label>
+      <div class="form-row"><label>Datum *<input id="gigDate" type="date" required></label><label>Startzeit<input id="gigTime" type="time" value="22:00"></label></div>
+      <div class="form-row"><label>Gage (€)<input id="gigFee" type="number" min="0" step="1" value="500"></label><label>Status<select id="gigStatus"><option>Angefragt</option><option>Bestätigt</option><option>Abgeschlossen</option></select></label></div>
+      <label>Ansprechpartner<input id="gigContact" maxlength="120" placeholder="Name / Booking-Kontakt"></label>
+      <label>Kontakt / Telefon / E-Mail<input id="gigContactInfo" maxlength="200" placeholder="Optional"></label>
+      <label>Notizen<textarea id="gigNotes" rows="3" maxlength="2000" placeholder="Spielzeit, Technik, Absprachen …"></textarea></label>
+      <label class="check-label"><input type="checkbox" id="gigPaid"> Gage wurde bezahlt</label>
+      <div class="dialog-actions"><button type="button" class="secondary" id="deleteGig" hidden>Gig löschen</button><button type="submit" class="primary" id="saveGig">Gig speichern</button></div>
+    </form>
+  </dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
